@@ -205,6 +205,49 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ## **Acessando a Instância via SSH**
 
+## 1. Acesso via AWS Management Console (EC2 Instance Connect)
+
+**Como funciona:**  
+Quando você acessa a instância pelo site da AWS, normalmente está utilizando o [EC2 Instance Connect](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ec2-instance-connect-methods.html) – um recurso que permite estabelecer uma conexão SSH diretamente pelo console da AWS. Nesse método, você seleciona a instância desejada, clica em “Connect” e escolhe a opção “EC2 Instance Connect”. Em seguida, um terminal é aberto no próprio navegador, possibilitando a interação com a máquina sem que seja necessário configurar manualmente uma conexão SSH a partir do seu computador.
+
+**Vantagens desse método:**  
+- **Simplicidade:** Você não precisa lidar com a geração, o armazenamento ou a configuração de chaves SSH manualmente.  
+- **Segurança:** Como o processo é gerenciado pelo console da AWS e integrado ao IAM, o acesso é autorizado por políticas, reduzindo riscos de erros na gestão de chaves.  
+- **Sem necessidade de clientes externos:** Não é preciso instalar um cliente SSH no seu computador, já que a conexão ocorre via navegador.
+
+---
+
+## 2. Acesso via SSH com Comandos (Terminal Local)
+
+**O que é SSH:**  
+SSH (Secure Shell) é um protocolo de rede que permite uma comunicação segura e criptografada entre o seu computador e a instância EC2. Ao “entrar via SSH”, você está estabelecendo uma sessão de terminal remota, na qual pode executar comandos diretamente no sistema operacional da instância.
+
+**Como funciona:**  
+- **Configuração de chaves:** Geralmente, você precisa de um par de chaves (uma privada e uma pública). A chave pública é registrada na instância (por exemplo, durante a criação da instância) e a chave privada fica no seu computador.
+- **Uso de comandos:** No terminal, você utiliza um comando como:  
+  ```bash
+  ssh -i /caminho/para/sua-chave.pem ec2-user@<endereço-IP-ou-DNS>
+  ```
+  Esse comando estabelece uma conexão segura, permitindo que você gerencie a instância remotamente.
+
+**Vantagens desse método:**  
+- **Flexibilidade:** Para usuários que preferem a linha de comando e têm mais familiaridade com ferramentas de terminal, o SSH oferece um controle detalhado e direto.  
+- **Automação e scripts:** É possível integrar comandos SSH em scripts para automatizar tarefas de administração.
+
+---
+
+## Por que escolher um método ou outro?
+
+- **Acesso via Console (AWS Instance Connect):**  
+  - É ideal para quem deseja uma solução rápida e sem complicações.
+  - Reduz a necessidade de gerenciar chaves manualmente.
+  - Facilita a auditoria e o controle de acesso, pois utiliza as políticas do IAM da AWS.
+
+- **Acesso via Terminal (SSH com comandos):**  
+  - Recomendado para administradores e desenvolvedores que precisam de um nível maior de controle.
+  - Permite a integração com outras ferramentas e a automação de processos.
+  - É o método tradicional, amplamente suportado e flexível para diversas situações.
+
 ### Passo a Passo para Acesso Seguro
 
 1. **Criação do Par de Chaves:**
