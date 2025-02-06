@@ -106,7 +106,7 @@
 #### 2. AWS Lambda (Serverless)
 - **O que faz:** Executa código sem a necessidade de gerenciar servidores.
 - **Exemplo:**  
-  Redimensionamento automático de imagens ao serem enviadas para o [Amazon S3](#amazon-s3).
+  Redimensionamento automático de imagens ao serem enviadas para o Amazon S3.
 
 #### 3. Amazon S3 (Simple Storage Service)
 - **O que faz:**  
