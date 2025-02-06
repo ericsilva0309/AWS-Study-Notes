@@ -233,6 +233,14 @@ SSH (Secure Shell) é um protocolo de rede que permite uma comunicação segura 
 **Vantagens desse método:**  
 - **Flexibilidade:** Para usuários que preferem a linha de comando e têm mais familiaridade com ferramentas de terminal, o SSH oferece um controle detalhado e direto.  
 - **Automação e scripts:** É possível integrar comandos SSH em scripts para automatizar tarefas de administração.
+---
+## 3. Além dos métodos já mencionados, o próprio recurso “Connect to Instance” da AWS oferece um cliente SSH integrado, que permite acessar sua instância diretamente pelo navegador. Essa funcionalidade funciona da seguinte maneira:
+
+Cliente SSH Integrado no Console:
+Ao selecionar uma instância no AWS Management Console e clicar em “Connect”, você pode escolher a opção “EC2 Instance Connect” que, além de enviar automaticamente uma chave SSH temporária para a instância, abre uma sessão SSH diretamente no navegador. Assim, não é necessário ter um cliente SSH instalado localmente ou configurar manualmente as chaves.
+
+Como Funciona:
+Esse método utiliza o mesmo mecanismo do EC2 Instance Connect – onde uma chave SSH de curta duração é distribuída para a instância para autenticação –, mas integra tudo em uma interface web amigável. Você obtém os benefícios da segurança e da facilidade de uso, sem precisar lidar com a linha de comando ou com a gestão de chaves no seu computador.
 
 ---
 
