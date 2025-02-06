@@ -238,3 +238,116 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
      ```
 
 ---
+
+# **Configurando um Servidor Web Completo no EC2**
+
+## **Passo a Passo: Instalação do Apache + SSL + Página Customizada**
+
+### 1. Atualizar Pacotes do Sistema
+```bash
+sudo yum update -y
+```
+
+### 2. Instalar o Apache Web Server
+```bash
+sudo yum install httpd -y
+```
+
+### 3. Iniciar e Habilitar o Serviço
+```bash
+sudo systemctl start httpd
+sudo systemctl enable httpd
+```
+
+### 4. Verificar Status do Apache
+```bash
+sudo systemctl status httpd
+```
+
+---
+
+## **Configurando HTTPS (SSL)**
+### 5. Instalar Módulo SSL
+```bash
+sudo yum install mod_ssl -y
+```
+
+### 6. Configurar Arquivo SSL
+```bash
+sudo nano /etc/httpd/conf.d/ssl.conf
+```
+- Verifique se estas linhas existem:
+  ```ini
+  SSLCertificateFile /etc/pki/tls/certs/localhost.crt
+  SSLCertificateKeyFile /etc/pki/tls/private/localhost.key
+  ```
+- Salve com `Ctrl+X > Y > Enter`
+
+### 7. Reiniciar o Apache
+```bash
+sudo systemctl restart httpd
+```
+
+### 8. Verificar Porta 443
+```bash
+sudo netstat -tulnp | grep 443
+```
+
+---
+
+## **Criando uma Página Web Customizada**
+### 9. Acessar Diretório do Apache
+```bash
+cd /var/www/html
+```
+
+### 10. Criar/Criar Arquivo index.html
+```bash
+sudo nano index.html
+```
+- Cole:
+  ```html
+  <!DOCTYPE html>
+  <html>
+  <head>
+      <title>Mergulhe em tecnologia!</title>
+  </head>
+  <body>
+      <h1>Boa-vindas ao site mais interessante de tecnologia da web!</h1>
+      <p>Este é um site hospedado em uma instância EC2.</p>
+  </body>
+  </html>
+  ```
+- Salve com `Ctrl+X > Y > Enter`
+
+### 11. Ajustar Permissões
+```bash
+sudo chmod 644 index.html
+```
+
+### 12. Reiniciar Apache
+```bash
+sudo systemctl restart httpd
+```
+
+---
+
+## **Acessando o Site**
+1. No navegador, acesse:
+   - `http://IP_PUBLICO` (HTTP)
+   - `https://IP_PUBLICO` (HTTPS - aviso de segurança é normal em certificado autoassinado)
+
+---
+
+## **Notas Importantes**
+- **Certificado SSL Autoassinado**:  
+  O aviso "Conexão Não Segura" aparece porque usamos um certificado gerado localmente.  
+  Para produção, compre um certificado válido (ex: via AWS Certificate Manager).
+
+- **Segurança**:  
+  Mantenha o grupo de segurança com apenas portas 80/443 abertas para `0.0.0.0/0`.
+
+- **Monitoramento**:  
+  Configure alertas no CloudWatch para tráfego anormal.
+
+---
