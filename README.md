@@ -27,7 +27,8 @@
 11. [Containerização e Deploy com Docker e ECS/ECR](#containerização-e-deploy-com-docker-e-ecsecr)
     - [Conceitos e Benefícios dos Containers](#conceitos-e-benefícios-dos-containers)
     - [Construindo uma Imagem Docker](#construindo-uma-imagem-docker)
-    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-elastic-container-service-ecs-e-elastic-container-registry-ecr)
+    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-ecs-e-ecr)
+    - [Deploy no ECS: Configuração do Cluster e Task Definition](#deploy-no-ecs-configuração-do-cluster-e-task-definition)
 12. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
 
 ---
@@ -36,7 +37,7 @@
 
 A computação em nuvem é um modelo revolucionário para a entrega de serviços de TI que permite que empresas e desenvolvedores aluguem recursos de hardware, armazenamento, redes e processamento de dados sob demanda, sem a necessidade de investir em infraestrutura física própria. Esse modelo possibilita hospedar sites, aplicativos, bancos de dados e diversas outras soluções de forma escalável, segura e com custos operacionais otimizados, pagando apenas pelo que é utilizado.
 
-Empresas de todos os portes podem se beneficiar dessa abordagem, pois ela oferece alta disponibilidade e flexibilidade para adaptar os recursos conforme a demanda. Por exemplo, ao hospedar todo um site na nuvem, uma organização pode utilizar serviços como Amazon EC2 para a computação, Amazon S3 para armazenamento e Amazon RDS para bancos de dados, integrando diversas soluções que juntas garantem um ambiente robusto e seguro. Assim, a computação em nuvem permite que as empresas se concentrem no seu core business, enquanto a gestão da infraestrutura é delegada a provedores especializados como a AWS, Google Cloud e Azure.
+Empresas de todos os portes podem se beneficiar dessa abordagem, pois ela oferece alta disponibilidade e flexibilidade para adaptar os recursos conforme a demanda. Por exemplo, ao hospedar todo um site na nuvem, uma organização pode utilizar serviços como Amazon EC2 para computação, Amazon S3 para armazenamento e Amazon RDS para bancos de dados, integrando diversas soluções que juntas garantem um ambiente robusto e seguro. Assim, a computação em nuvem permite que as empresas se concentrem em seu core business, enquanto a gestão da infraestrutura é delegada a provedores especializados como AWS, Google Cloud e Azure.
 
 ---
 
@@ -508,23 +509,23 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Conceitos e Benefícios dos Containers
 - **O que é um Container?**  
-  Um container é uma técnica de virtualização que compartilha o mesmo sistema operacional do host, mas isola as aplicações e suas dependências, tornando o ambiente leve e portátil. Isso permite que a aplicação seja executada de forma consistente em diferentes ambientes, sem problemas de compatibilidade.
+  Um container é uma técnica de virtualização que compartilha o mesmo sistema operacional do host, mas isola a aplicação e suas dependências, tornando o ambiente mais leve e portátil. Isso permite que a aplicação seja executada de forma consistente em diferentes ambientes, sem problemas de compatibilidade.
 - **Benefícios:**  
   - Portabilidade entre ambientes de desenvolvimento, teste e produção.  
   - Consistência na execução da aplicação, independente do host.  
-  - Maior eficiência no uso de recursos quando comparado a máquinas virtuais tradicionais.
+  - Maior eficiência no uso de recursos em comparação com máquinas virtuais tradicionais.
 
 ### Construindo uma Imagem Docker
 - **Passos para Containerizar sua Aplicação:**
-  1. No Ubuntu (preferencialmente via WSL 2 para compatibilidade com Docker), clone seu projeto:
+  1. No Ubuntu (preferencialmente via WSL 2), clone seu projeto:
      ```bash
      git clone <link-do-repositório>
      ```
-  2. No diretório do projeto, crie um arquivo chamado `Dockerfile` usando um editor de texto (por exemplo, com o `nano`):
+  2. No diretório do projeto, crie um arquivo chamado `Dockerfile`:
      ```bash
      nano Dockerfile
      ```
-  3. Insira o seguinte conteúdo como exemplo, usando a imagem do Node.js como base:
+  3. Insira o seguinte conteúdo (usando a imagem do Node.js como exemplo):
      ```Dockerfile
      FROM node:latest
      WORKDIR /app
@@ -539,47 +540,84 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
      ```bash
      docker build -t adopet:1.0 .
      ```
-  6. Verifique se a imagem foi criada:
+  6. Verifique a imagem criada:
      ```bash
      docker image ls
      ```
-  7. Execute um container com a imagem criada:
+  7. Execute um container:
      ```bash
      docker run -p 3000:3000 adopet:1.0
      ```
-  8. Abra o navegador e acesse `http://localhost:3000` para testar sua aplicação.
+  8. Abra o navegador e acesse `http://localhost:3000` para testar a aplicação.
 
 ### Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)
 - **Visão Geral:**  
-  Para projetos complexos que separam front end, back end e banco de dados, a containerização permite implantar cada componente de forma isolada, garantindo maior eficiência e escalabilidade.
-- **Passos para Deploy:**
+  O ECR é o serviço de registro de containers da AWS, onde você armazena suas imagens Docker. O ECS permite orquestrar e escalar seus containers na AWS. Essa abordagem é ideal para projetos que precisam separar front end, back end e banco de dados em containers distintos, garantindo portabilidade, eficiência e escalabilidade.
+- **Passos Básicos:**
   1. **Preparar a Imagem:**  
      Construa a imagem Docker conforme os passos acima.
   2. **Criar um Repositório no ECR:**
-     - Acesse o Amazon ECR pelo console AWS e clique em "Criar um repositório".
+     - Acesse o Amazon ECR no console AWS e clique em "Criar um repositório".
      - Defina o repositório como privado e nomeie-o (por exemplo, `adopet`).
   3. **Autenticar no ECR via AWS CLI:**
-     - Configure suas credenciais com:
-       ```bash
-       aws configure
-       ```
+     - Configure suas credenciais com `aws configure`.
      - Execute o comando:
        ```bash
-       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <uri-do-repositório>
+       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <URI-do-repositório>
        ```
   4. **Taggear e Fazer o Push da Imagem:**
      - Taggear a imagem:
        ```bash
-       docker tag adopet:1.0 <uri-do-repositório>:1.0
+       docker tag adopet:1.0 <URI-do-repositório>:1.0
        ```
      - Enviar a imagem para o ECR:
        ```bash
-       docker push <uri-do-repositório>:1.0
+       docker push <URI-do-repositório>:1.0
        ```
-  5. **Implantar no ECS:**  
-     Use o Elastic Container Service (ECS) para orquestrar e escalar seus containers. Essa abordagem permite separar componentes (front end, back end, banco de dados) em containers distintos e gerenciá-los de forma integrada na AWS.
-  6. **Benefícios:**  
-     Combina a eficiência e portabilidade dos containers com a escalabilidade e flexibilidade do ECS, proporcionando um deploy ágil e consistente.
+
+### Deploy no ECS: Configuração do Cluster e Task Definition
+- **Passo a Passo Detalhado (via Console AWS):**
+  1. **Acessar o ECS:**
+     - No console da AWS, procure e acesse o serviço **Elastic Container Service (ECS)**.
+  2. **Criar um Cluster:**
+     - Clique em **Criar cluster**.
+     - Escolha um nome para o cluster, por exemplo, `projeto_adopet`.
+     - Selecione a opção de **EC2** (para provisionar instâncias físicas).
+     - Escolha entre:
+       - **Sob Demanda:** Paga conforme o uso.
+       - **Spot:** Custo menor, mas com disponibilidade variável.
+     - Selecione a imagem do sistema operacional (Linux).
+     - No campo de **Tipo de Instância**, escolha uma instância adequada (por exemplo, `t2.medium`).
+     - Configure a função da instância (perfil IAM); caso contrário, será utilizado o padrão.
+     - Defina a capacidade desejada (número de instâncias) e associe o par de chaves (para acesso remoto via AWS CLI).
+     - Utilize a VPC e sub-redes padrão, ou configure conforme necessário, e mantenha o grupo de segurança padrão.
+     - Clique em **Criar** para provisionar o cluster.
+  3. **Definir uma Tarefa (Task Definition):**
+     - No ECS, acesse **Definições de Tarefas** e clique em **Criar nova definição de tarefa**.
+     - Escolha a família da tarefa (por exemplo, `família-adopet`) para agrupar futuras versões.
+     - Em **Requisitos de Infraestrutura**, selecione **EC2** (já que o cluster foi configurado com instâncias EC2) e defina o modo de rede como **Bridge**.
+     - Configure o tamanho da tarefa:
+       - **CPU:** Por exemplo, 0.5 unidades.
+       - **Memória:** Defina um limite mínimo (flexível, por exemplo, 2 GB) e um limite máximo (rígido) conforme necessário.
+     - Em **Contêiner**, clique em **Adicionar contêiner**:
+       - Nome: `adopet_container`
+       - No campo da **URI da imagem**, insira a URI da imagem que você obteve no ECR.
+       - Marque a opção **Contêiner Essencial** como "Sim".
+       - Configure o **Mapeamento de Portas**:
+         - **Porta do Host:** 80
+         - **Porta do Contêiner:** 3000
+         - **Protocolo:** TCP
+     - Ajuste os **Limites de Alocação de Recursos** para garantir que o contêiner tenha recursos suficientes (por exemplo, CPU 0.5, memória mínima de 2 GB).
+     - Configure o **Registro em Log** (opcional, mas recomendado com o CloudWatch).
+     - Clique em **Criar** para salvar a definição da tarefa.
+  4. **Implantar a Aplicação como Serviço:**
+     - Após criar a definição de tarefa, clique em **Implantar**.
+     - Escolha **Criar Serviço** para garantir execução contínua, o que assegura alta disponibilidade (se uma tarefa falhar, o ECS reinicia uma nova).
+     - Configure o número de tarefas desejado e outras opções de escalonamento.
+     - Finalize e clique em **Criar Serviço** para implantar sua aplicação.
+
+> **Observação:**  
+> Criar um serviço no ECS garante que a aplicação seja executada continuamente, com reinicialização automática em caso de falhas, enquanto executar uma tarefa é adequado para execuções pontuais.
 
 ---
 
@@ -594,6 +632,6 @@ Após configurar com sucesso uma instância EC2 para hospedar o site de uma star
   Utilize o AWS SDK para integrar os serviços do S3 (armazenamento de arquivos) e do RDS (banco de dados) diretamente na aplicação web, garantindo que os arquivos sensíveis não fiquem expostos. Para isso, configure uma VPC com sub-redes públicas e privadas, isolando e protegendo os dados estratégicos e garantindo uma infraestrutura organizada e segura.
 
 - **Deploy com Containers no ECS/ECR:**  
-  Para projetos complexos que exigem a separação de front end, back end e banco de dados, a containerização se mostra a estratégia mais adequada. Ao criar imagens Docker da sua aplicação e enviá-las ao ECR, você poderá orquestrar os containers com o ECS, garantindo um ambiente ágil, escalável e eficiente.
+  Para projetos complexos que exigem a separação de front end, back end e banco de dados, a containerização se mostra a estratégia mais adequada. Ao criar imagens Docker da sua aplicação e enviá-las ao ECR, você poderá orquestrar os containers com o ECS, garantindo um ambiente ágil, escalável e resiliente.
 
 ---
