@@ -27,7 +27,7 @@
 11. [Containerização e Deploy com Docker e ECS/ECR](#containerização-e-deploy-com-docker-e-ecsecr)
     - [Conceitos e Benefícios dos Containers](#conceitos-e-benefícios-dos-containers)
     - [Construindo uma Imagem Docker](#construindo-uma-imagem-docker)
-    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-elastic-container-service-(ecs)-e-elastic-container-registry-(ecr))
+    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-elastic-container-service-ecs-e-elastic-container-registry-ecr)
 12. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
 
 ---
