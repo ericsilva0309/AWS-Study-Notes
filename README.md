@@ -24,7 +24,11 @@
 10. [Seleção de Instâncias para Diferentes Cargas de Trabalho](#seleção-de-instâncias-para-diferentes-cargas-de-trabalho)
     - [Categorias de Instâncias](#categorias-de-instâncias)
     - [Exemplo: Instância para Treinamento de Redes Neurais](#exemplo-instância-para-treinamento-de-redes-neurais)
-11. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
+11. [Containerização e Deploy com Docker e ECS/ECR](#containerização-e-deploy-com-docker-e-ecsecr)
+    - [Conceitos e Benefícios dos Containers](#conceitos-e-benefícios-dos-containers)
+    - [Construindo uma Imagem Docker](#construindo-uma-imagem-docker)
+    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-ecs-e-ecr)
+12. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
 
 ---
 
@@ -449,8 +453,7 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Iniciando com Lightsail
 - **Visão Geral:**  
-  No Lightsail, a criação de instâncias é mais simplificada.  
-  Ao criar uma nova instância, você pode escolher um esquema (blueprint) que já traz uma configuração pré-definida.  
+  No Lightsail, a criação de instâncias é mais simplificada. Ao criar uma nova instância, você pode escolher um esquema (blueprint) que já traz uma configuração pré-definida.
 - **Exemplo de Uso:**  
   Utilizar o blueprint do WordPress, pois ele é versátil e facilita o compartilhamento de código e a gestão de conteúdo.
 
@@ -487,8 +490,7 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 - **Otimizadas para Memória:**  
   Ideais para aplicações que requerem acesso rápido a grandes volumes de dados na memória (por exemplo, bases de dados de alta performance e processamento em tempo real).
 - **Computação Acelerada:**  
-  Projetadas para cargas de trabalho que demandam hardware especializado, como GPUs ou FPGAs.  
-  Indicadas para treinamento de modelos de machine learning, renderização gráfica e processamento de mídia.
+  Projetadas para cargas de trabalho que demandam hardware especializado, como GPUs ou FPGAs. Indicadas para treinamento de modelos de machine learning, renderização gráfica e processamento de mídia.
 - **Otimizadas para Armazenamento:**  
   Adequadas para aplicações que exigem baixa latência e alto desempenho de I/O (sistemas de arquivos distribuídos, processamento de big data).
 - **Otimizadas para HPC (High Performance Computing):**  
@@ -502,6 +504,85 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ---
 
+## Containerização e Deploy com Docker e ECS/ECR
+
+### Conceitos e Benefícios dos Containers
+- **O que é um Container?**  
+  Um container é uma técnica de virtualização que compartilha o mesmo sistema operacional do host, mas isola as aplicações e suas dependências, tornando o ambiente leve e portátil. Isso permite que a aplicação seja executada de forma consistente em diferentes ambientes, sem problemas de compatibilidade.
+- **Benefícios:**  
+  - Portabilidade entre ambientes de desenvolvimento, teste e produção.  
+  - Consistência na execução da aplicação, independente do host.  
+  - Maior eficiência no uso de recursos quando comparado a máquinas virtuais tradicionais.
+
+### Construindo uma Imagem Docker
+- **Passos para Containerizar sua Aplicação:**
+  1. No Ubuntu (preferencialmente via WSL 2 para compatibilidade com Docker), clone seu projeto:
+     ```bash
+     git clone <link-do-repositório>
+     ```
+  2. No diretório do projeto, crie um arquivo chamado `Dockerfile` usando um editor de texto (por exemplo, com o `nano`):
+     ```bash
+     nano Dockerfile
+     ```
+  3. Insira o seguinte conteúdo como exemplo, usando a imagem do Node.js como base:
+     ```Dockerfile
+     FROM node:latest
+     WORKDIR /app
+     COPY package*.json ./
+     RUN npm install
+     COPY . .
+     EXPOSE 3000
+     CMD ["npm", "start"]
+     ```
+  4. Salve o arquivo (`Ctrl+X`, `Y`, `Enter`).
+  5. Construa a imagem Docker:
+     ```bash
+     docker build -t adopet:1.0 .
+     ```
+  6. Verifique se a imagem foi criada:
+     ```bash
+     docker image ls
+     ```
+  7. Execute um container com a imagem criada:
+     ```bash
+     docker run -p 3000:3000 adopet:1.0
+     ```
+  8. Abra o navegador e acesse `http://localhost:3000` para testar sua aplicação.
+
+### Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)
+- **Visão Geral:**  
+  Para projetos complexos que separam front end, back end e banco de dados, a containerização permite implantar cada componente de forma isolada, garantindo maior eficiência e escalabilidade.
+- **Passos para Deploy:**
+  1. **Preparar a Imagem:**  
+     Construa a imagem Docker conforme os passos acima.
+  2. **Criar um Repositório no ECR:**
+     - Acesse o Amazon ECR pelo console AWS e clique em "Criar um repositório".
+     - Defina o repositório como privado e nomeie-o (por exemplo, `adopet`).
+  3. **Autenticar no ECR via AWS CLI:**
+     - Configure suas credenciais com:
+       ```bash
+       aws configure
+       ```
+     - Execute o comando:
+       ```bash
+       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <uri-do-repositório>
+       ```
+  4. **Taggear e Fazer o Push da Imagem:**
+     - Taggear a imagem:
+       ```bash
+       docker tag adopet:1.0 <uri-do-repositório>:1.0
+       ```
+     - Enviar a imagem para o ECR:
+       ```bash
+       docker push <uri-do-repositório>:1.0
+       ```
+  5. **Implantar no ECS:**  
+     Use o Elastic Container Service (ECS) para orquestrar e escalar seus containers. Essa abordagem permite separar componentes (front end, back end, banco de dados) em containers distintos e gerenciá-los de forma integrada na AWS.
+  6. **Benefícios:**  
+     Combina a eficiência e portabilidade dos containers com a escalabilidade e flexibilidade do ECS, proporcionando um deploy ágil e consistente.
+
+---
+
 ## Cenário Integrado: Bytebank Banco Digital
 
 Após configurar com sucesso uma instância EC2 para hospedar o site de uma startup, como o Bytebank Banco Digital, as estratégias recomendadas são:
@@ -511,5 +592,8 @@ Após configurar com sucesso uma instância EC2 para hospedar o site de uma star
 
 - **Integração com AWS SDK e Segurança com VPC:**  
   Utilize o AWS SDK para integrar os serviços do S3 (armazenamento de arquivos) e do RDS (banco de dados) diretamente na aplicação web, garantindo que os arquivos sensíveis não fiquem expostos. Para isso, configure uma VPC com sub-redes públicas e privadas, isolando e protegendo os dados estratégicos e garantindo uma infraestrutura organizada e segura.
+
+- **Deploy com Containers no ECS/ECR:**  
+  Para projetos complexos que exigem a separação de front end, back end e banco de dados, a containerização se mostra a estratégia mais adequada. Ao criar imagens Docker da sua aplicação e enviá-las ao ECR, você poderá orquestrar os containers com o ECS, garantindo um ambiente ágil, escalável e eficiente.
 
 ---
