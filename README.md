@@ -11,13 +11,20 @@
     - [Principais Serviços AWS](#principais-serviços-aws)
 5. [Dicas Práticas](#dicas-práticas)
    - [Cenários Reais](#cenários-reais)
-7. [Configurações Avançadas e Passo a Passo Completo](#configurações-avançadas-e-passo-a-passo-completo)
+6. [Configurações Avançadas e Passo a Passo Completo](#configurações-avançadas-e-passo-a-passo-completo)
     - [Criando e Configurando uma Instância EC2](#criando-uma-instância-ec2-para-um-servidor-web)
     - [Acesso e Configuração de Segurança](#acessando-a-instância-via-ssh)
     - [Configuração de um Servidor Web Completo no EC2](#configurando-um-servidor-web-completo-no-ec2)
-8. [Gerenciamento com AWS CLI e Automação](#gerenciando-serviços-com-aws-cli-e-automação)
-9. [Integração de Serviços com AWS SDK e Segurança da Infraestrutura](#integração-de-serviços-com-aws-sdk-e-segurança-da-infraestrutura)
-10. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
+7. [Gerenciamento com AWS CLI e Automação](#gerenciando-serviços-com-aws-cli-e-automação)
+8. [Integração de Serviços com AWS SDK e Segurança da Infraestrutura](#integração-de-serviços-com-aws-sdk-e-segurança-da-infraestrutura)
+9. [Aplicações no Lightsail e Configuração de Domínio](#aplicações-no-lightsail-e-configuração-de-domínio)
+    - [Iniciando com Lightsail](#iniciando-com-lightsail)
+    - [Configuração do WordPress no Lightsail](#configuração-do-wordpress-no-lightsail)
+    - [Associando um Domínio com o Amazon Route 53](#associando-um-domínio-com-o-amazon-route-53)
+10. [Seleção de Instâncias para Diferentes Cargas de Trabalho](#seleção-de-instâncias-para-diferentes-cargas-de-trabalho)
+    - [Categorias de Instâncias](#categorias-de-instâncias)
+    - [Exemplo: Instância para Treinamento de Redes Neurais](#exemplo-instância-para-treinamento-de-redes-neurais)
+11. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
 
 ---
 
@@ -429,6 +436,63 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 - **Vantagens:**
   - Protege dados sensíveis e componentes estratégicos da aplicação.
   - Facilita a organização e a segurança da infraestrutura, permitindo a aplicação de regras específicas de firewall e controle de acesso.
+
+---
+
+## Aplicações no Lightsail e Configuração de Domínio
+
+### Iniciando com Lightsail
+- **Visão Geral:**  
+  No Lightsail, a criação de instâncias é mais simplificada.  
+  Ao criar uma nova instância, você pode escolher um esquema (blueprint) que já traz uma configuração pré-definida.  
+- **Exemplo de Uso:**  
+  Utilizar o blueprint do WordPress, pois ele é versátil e facilita o compartilhamento de código e a gestão de conteúdo.
+
+### Configuração do WordPress no Lightsail
+- **Após a Criação da Instância:**  
+  - Acesse as configurações da instância para verificar as regras de entrada e saída que permitem o acesso dos usuários.
+  - No painel do Lightsail, na opção de “Gerenciar” e “Conectar-se”, configure as credenciais do WordPress para inserir e criar conteúdo.
+- **Acesso via CloudShell:**  
+  - Inicie o CloudShell (um recurso que permite interagir com as instâncias via navegador, sem a necessidade de um cliente SSH no seu computador).
+  - Copie o código da etapa 2 e insira-o no CloudShell (Ctrl+V).  
+  - A senha será exibida logo após a linha “application_password”.  
+  - Use esta senha para fazer login no WordPress:
+    - **Login:** user  
+    - **Password:** (a senha copiada do terminal)  
+  - Acesse o endereço IP público para visualizar e administrar o WordPress.
+
+### Associando um Domínio com o Amazon Route 53
+- **Motivação:**  
+  Para que os usuários acessem o servidor através de um domínio em vez de um endereço IP público.
+- **Passos:**  
+  - No Lightsail, há uma opção para gerenciamento de domínio.  
+  - Você pode registrar um novo domínio ou utilizar um já existente.
+  - No Amazon Route 53, crie um conjunto de registros (por exemplo, um registro A) que aponte para o endereço IP público da sua instância Lightsail.
+  - Essa configuração torna o acesso à aplicação simples e profissional.
+
+---
+
+## Seleção de Instâncias para Diferentes Cargas de Trabalho
+
+### Categorias de Instâncias
+- **Uso Geral:**  
+  Adequadas para uma ampla gama de cargas de trabalho (servidores web, aplicativos, pequenas e médias bases de dados, ambientes de desenvolvimento/teste).  
+  Apresentam uma relação equilibrada entre CPU, memória e armazenamento.
+- **Otimizadas para Memória:**  
+  Ideais para aplicações que requerem acesso rápido a grandes volumes de dados na memória (por exemplo, bases de dados de alta performance e processamento em tempo real).
+- **Computação Acelerada:**  
+  Projetadas para cargas de trabalho que demandam hardware especializado, como GPUs ou FPGAs.  
+  Indicadas para treinamento de modelos de machine learning, renderização gráfica e processamento de mídia.
+- **Otimizadas para Armazenamento:**  
+  Adequadas para aplicações que exigem baixa latência e alto desempenho de I/O (sistemas de arquivos distribuídos, processamento de big data).
+- **Otimizadas para HPC (High Performance Computing):**  
+  Para tarefas que exigem processamento intensivo e comunicação rápida entre máquinas, como simulações científicas e modelagens financeiras.
+
+### Exemplo: Instância para Treinamento de Redes Neurais
+- **Cenário de Engenharia de Dados:**  
+  Em um projeto de detecção de padrões usando redes neurais, onde grandes conjuntos de dados são processados e modelos complexos são treinados, a escolha ideal é utilizar uma instância de **Computação Acelerada**.
+- **Justificativa:**  
+  Essas instâncias oferecem processadores de alto desempenho, essenciais para cargas de trabalho intensivas em processamento, proporcionando a capacidade necessária para treinar modelos de aprendizado de máquina de forma eficiente.
 
 ---
 
