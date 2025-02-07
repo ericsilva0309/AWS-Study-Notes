@@ -30,6 +30,12 @@
 
 ## Introdução à Computação em Nuvem
 
+A computação em nuvem é um modelo revolucionário para a entrega de serviços de TI que permite que empresas e desenvolvedores aluguem recursos de hardware, armazenamento, redes e processamento de dados sob demanda, sem a necessidade de investir em infraestrutura física própria. Esse modelo possibilita hospedar sites, aplicativos, bancos de dados e diversas outras soluções de forma escalável, segura e com custos operacionais otimizados, pagando apenas pelo que é utilizado.
+
+Empresas de todos os portes podem se beneficiar dessa abordagem, pois ela oferece alta disponibilidade e flexibilidade para adaptar os recursos conforme a demanda. Por exemplo, ao hospedar todo um site na nuvem, uma organização pode utilizar serviços como Amazon EC2 para a computação, Amazon S3 para armazenamento e Amazon RDS para bancos de dados, integrando diversas soluções que juntas garantem um ambiente robusto e seguro. Assim, a computação em nuvem permite que as empresas se concentrem no seu core business, enquanto a gestão da infraestrutura é delegada a provedores especializados como a AWS, Google Cloud e Azure.
+
+---
+
 ### Essencial para Empresas
 - **Terceirização de Infraestrutura de TI:** Não é necessário comprar hardware, pois utiliza-se a infraestrutura do provedor.
 - **Redução de Custos Operacionais:** Paga-se apenas pelo que é utilizado.
