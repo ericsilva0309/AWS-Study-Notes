@@ -27,7 +27,7 @@
 11. [Containerização e Deploy com Docker e ECS/ECR](#containerização-e-deploy-com-docker-e-ecsecr)
     - [Conceitos e Benefícios dos Containers](#conceitos-e-benefícios-dos-containers)
     - [Construindo uma Imagem Docker](#construindo-uma-imagem-docker)
-    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-ecs-e-ecr)
+    - [Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)](#deploy-com-elastic-container-service-ecs-e-elastic-container-registry-ecr)
     - [Deploy no ECS: Configuração do Cluster e Task Definition](#deploy-no-ecs-configuração-do-cluster-e-task-definition)
 12. [Cenário Integrado: Bytebank Banco Digital](#cenário-integrado-bytebank-banco-digital)
 
@@ -418,14 +418,14 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Automatizando a Gestão com CloudWatch
 - **Configurar um Alarme para Monitorar a Utilização da CPU:**
-  - Utilize o comando `aws cloudwatch put-metric-alarm` para criar um alarme que monitore a métrica de CPU da instância EC2.  
+  - Utilize o comando `aws cloudwatch put-metric-alarm` para criar um alarme que monitore a métrica de CPU da instância EC2.
   - Exemplo de comando:
     ```bash
     aws cloudwatch put-metric-alarm --alarm-name "AlertaCPUBytebank" --metric-name CPUUtilization --namespace AWS/EC2 --statistic Average --period 300 --threshold 80 --comparison-operator GreaterThanThreshold --dimensions Name=InstanceId,Value=i-023a5338be9d5efbb --evaluation-periods 2 --alarm-actions <ARN-da-Ação> --unit Percent
     ```
   - **Benefícios:**
-    - Permite automatizar ações (como escalonamento ou notificações) com base em métricas específicas.
-    - Garante que a utilização dos recursos seja otimizada, mantendo a alta disponibilidade e o desempenho do site.
+    - Automatiza ações (como escalonamento ou notificações) com base em métricas.
+    - Otimiza a utilização dos recursos, mantendo alta disponibilidade e desempenho.
 
 ---
 
@@ -433,20 +433,18 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Integração com AWS SDK
 - **Uso do AWS SDK:**
-  - Permite a integração direta dos serviços da AWS (como S3, RDS, etc.) com sua aplicação web.
+  - Permite a integração direta dos serviços da AWS (S3, RDS, etc.) com sua aplicação web.
   - Facilita a automação e o gerenciamento de recursos diretamente no código, permitindo criar aplicações dinâmicas e escaláveis.
   
 ### Segurança e Organização com VPC
 - **Configuração de uma VPC:**
   - Crie uma VPC para isolar e proteger seus recursos.
   - Divida a VPC em sub-redes específicas:
-    - **Sub-redes públicas:**  
-      Para serviços que precisam ser acessados diretamente pela internet (ex: instâncias de aplicação web).
-    - **Sub-redes privadas:**  
-      Para recursos sensíveis, como bancos de dados (RDS) e servidores de aplicação que não devem ser acessados diretamente da internet.
+    - **Sub-redes públicas:** Para serviços acessíveis via internet (ex: front-end).
+    - **Sub-redes privadas:** Para recursos sensíveis (ex: bancos de dados).
 - **Vantagens:**
-  - Protege dados sensíveis e componentes estratégicos da aplicação.
-  - Facilita a organização e a segurança da infraestrutura, permitindo a aplicação de regras específicas de firewall e controle de acesso.
+  - Protege dados e componentes críticos.
+  - Organiza e isola o tráfego com regras de firewall e controle de acesso.
 
 ---
 
@@ -454,31 +452,29 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Iniciando com Lightsail
 - **Visão Geral:**  
-  No Lightsail, a criação de instâncias é mais simplificada. Ao criar uma nova instância, você pode escolher um esquema (blueprint) que já traz uma configuração pré-definida.
+  No Lightsail, a criação de instâncias é simplificada. Ao criar uma instância, escolha um blueprint que já traga a configuração pré-definida.
 - **Exemplo de Uso:**  
-  Utilizar o blueprint do WordPress, pois ele é versátil e facilita o compartilhamento de código e a gestão de conteúdo.
+  Utilize o blueprint do WordPress, pois ele é versátil para gestão de conteúdo.
 
 ### Configuração do WordPress no Lightsail
 - **Após a Criação da Instância:**  
-  - Acesse as configurações da instância para verificar as regras de entrada e saída que permitem o acesso dos usuários.
-  - No painel do Lightsail, na opção de “Gerenciar” e “Conectar-se”, configure as credenciais do WordPress para inserir e criar conteúdo.
+  - Acesse as configurações para verificar as regras de acesso.
+  - No painel “Gerenciar” e “Conectar-se”, configure as credenciais do WordPress para criação de conteúdo.
 - **Acesso via CloudShell:**  
-  - Inicie o CloudShell (um recurso que permite interagir com as instâncias via navegador, sem a necessidade de um cliente SSH no seu computador).
-  - Copie o código da etapa 2 e insira-o no CloudShell (Ctrl+V).  
-  - A senha será exibida logo após a linha “application_password”.  
-  - Use esta senha para fazer login no WordPress:
+  - Inicie o CloudShell para interagir com a instância sem necessidade de um cliente SSH.
+  - Copie e cole o código da etapa 2 (Ctrl+V); a senha será exibida após “application_password”.
+  - Use essa senha para fazer login no WordPress:
     - **Login:** user  
-    - **Password:** (a senha copiada do terminal)  
-  - Acesse o endereço IP público para visualizar e administrar o WordPress.
+    - **Password:** (senha copiada)
+  - Acesse o IP público para gerenciar o WordPress.
 
 ### Associando um Domínio com o Amazon Route 53
 - **Motivação:**  
-  Para que os usuários acessem o servidor através de um domínio em vez de um endereço IP público.
+  Permite que os usuários acessem o serviço via domínio, e não IP.
 - **Passos:**  
-  - No Lightsail, há uma opção para gerenciamento de domínio.  
-  - Você pode registrar um novo domínio ou utilizar um já existente.
-  - No Amazon Route 53, crie um conjunto de registros (por exemplo, um registro A) que aponte para o endereço IP público da sua instância Lightsail.
-  - Essa configuração torna o acesso à aplicação simples e profissional.
+  - No Lightsail, gerencie o domínio (registrar ou utilizar um existente).
+  - No Route 53, crie um registro A que aponte para o IP público da instância.
+  - Essa configuração profissionaliza o acesso à aplicação.
 
 ---
 
@@ -486,22 +482,21 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Categorias de Instâncias
 - **Uso Geral:**  
-  Adequadas para uma ampla gama de cargas de trabalho (servidores web, aplicativos, pequenas e médias bases de dados, ambientes de desenvolvimento/teste).  
-  Apresentam uma relação equilibrada entre CPU, memória e armazenamento.
+  Para cargas variadas (servidores web, aplicativos, bases de dados, etc.) com equilíbrio entre CPU, memória e armazenamento.
 - **Otimizadas para Memória:**  
-  Ideais para aplicações que requerem acesso rápido a grandes volumes de dados na memória (por exemplo, bases de dados de alta performance e processamento em tempo real).
+  Para aplicações que requerem acesso rápido a grandes volumes de dados.
 - **Computação Acelerada:**  
-  Projetadas para cargas de trabalho que demandam hardware especializado, como GPUs ou FPGAs. Indicadas para treinamento de modelos de machine learning, renderização gráfica e processamento de mídia.
+  Com hardware especializado (GPUs ou FPGAs) para machine learning, renderização gráfica e processamento de mídia.
 - **Otimizadas para Armazenamento:**  
-  Adequadas para aplicações que exigem baixa latência e alto desempenho de I/O (sistemas de arquivos distribuídos, processamento de big data).
-- **Otimizadas para HPC (High Performance Computing):**  
-  Para tarefas que exigem processamento intensivo e comunicação rápida entre máquinas, como simulações científicas e modelagens financeiras.
+  Para aplicações que demandam baixa latência e alto desempenho de I/O.
+- **Otimizadas para HPC:**  
+  Para tarefas de processamento intensivo, como simulações e modelagens financeiras.
 
 ### Exemplo: Instância para Treinamento de Redes Neurais
 - **Cenário de Engenharia de Dados:**  
-  Em um projeto de detecção de padrões usando redes neurais, onde grandes conjuntos de dados são processados e modelos complexos são treinados, a escolha ideal é utilizar uma instância de **Computação Acelerada**.
+  Para detecção de padrões usando redes neurais com grandes conjuntos de dados, a escolha ideal é uma instância de **Computação Acelerada**.
 - **Justificativa:**  
-  Essas instâncias oferecem processadores de alto desempenho, essenciais para cargas de trabalho intensivas em processamento, proporcionando a capacidade necessária para treinar modelos de aprendizado de máquina de forma eficiente.
+  Oferece processadores de alto desempenho, essenciais para cargas intensivas em processamento e treinamento de modelos.
 
 ---
 
@@ -509,115 +504,94 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 
 ### Conceitos e Benefícios dos Containers
 - **O que é um Container?**  
-  Um container é uma técnica de virtualização que compartilha o mesmo sistema operacional do host, mas isola a aplicação e suas dependências, tornando o ambiente mais leve e portátil. Isso permite que a aplicação seja executada de forma consistente em diferentes ambientes, sem problemas de compatibilidade.
+  Técnica de virtualização que isola a aplicação e suas dependências, compartilhando o mesmo SO do host, mas de forma leve e portátil.
 - **Benefícios:**  
-  - Portabilidade entre ambientes de desenvolvimento, teste e produção.  
-  - Consistência na execução da aplicação, independente do host.  
-  - Maior eficiência no uso de recursos em comparação com máquinas virtuais tradicionais.
+  - Portabilidade entre desenvolvimento, teste e produção.
+  - Consistência na execução, independente do ambiente.
+  - Uso eficiente de recursos em comparação com VMs.
 
 ### Construindo uma Imagem Docker
-- **Passos para Containerizar sua Aplicação:**
-  1. No Ubuntu (preferencialmente via WSL 2), clone seu projeto:
-     ```bash
-     git clone <link-do-repositório>
-     ```
-  2. No diretório do projeto, crie um arquivo chamado `Dockerfile`:
-     ```bash
-     nano Dockerfile
-     ```
-  3. Insira o seguinte conteúdo (usando a imagem do Node.js como exemplo):
-     ```Dockerfile
-     FROM node:latest
-     WORKDIR /app
-     COPY package*.json ./
-     RUN npm install
-     COPY . .
-     EXPOSE 3000
-     CMD ["npm", "start"]
-     ```
-  4. Salve o arquivo (`Ctrl+X`, `Y`, `Enter`).
-  5. Construa a imagem Docker:
-     ```bash
-     docker build -t adopet:1.0 .
-     ```
-  6. Verifique a imagem criada:
-     ```bash
-     docker image ls
-     ```
-  7. Execute um container:
-     ```bash
-     docker run -p 3000:3000 adopet:1.0
-     ```
-  8. Abra o navegador e acesse `http://localhost:3000` para testar a aplicação.
+1. No Ubuntu (via WSL 2), clone seu projeto:
+   ```bash
+   git clone <link-do-repositório>
+   ```
+2. No diretório do projeto, crie um arquivo chamado `Dockerfile`:
+   ```bash
+   nano Dockerfile
+   ```
+3. Insira o seguinte conteúdo (usando Node.js como exemplo):
+   ```Dockerfile
+   FROM node:latest
+   WORKDIR /app
+   COPY package*.json ./
+   RUN npm install
+   COPY . .
+   EXPOSE 3000
+   CMD ["npm", "start"]
+   ```
+4. Salve o arquivo (`Ctrl+X`, `Y`, `Enter`).
+5. Construa a imagem Docker:
+   ```bash
+   docker build -t adopet:1.0 .
+   ```
+6. Verifique a imagem:
+   ```bash
+   docker image ls
+   ```
+7. Execute um container:
+   ```bash
+   docker run -p 3000:3000 adopet:1.0
+   ```
+8. Teste a aplicação acessando `http://localhost:3000` no navegador.
 
 ### Deploy com Elastic Container Service (ECS) e Elastic Container Registry (ECR)
 - **Visão Geral:**  
-  O ECR é o serviço de registro de containers da AWS, onde você armazena suas imagens Docker. O ECS permite orquestrar e escalar seus containers na AWS. Essa abordagem é ideal para projetos que precisam separar front end, back end e banco de dados em containers distintos, garantindo portabilidade, eficiência e escalabilidade.
+  O ECR armazena suas imagens Docker e o ECS orquestra e escala seus containers na AWS, ideal para separar front end, back end e banco de dados.
 - **Passos Básicos:**
-  1. **Preparar a Imagem:**  
-     Construa a imagem Docker conforme os passos acima.
-  2. **Criar um Repositório no ECR:**
-     - Acesse o Amazon ECR no console AWS e clique em "Criar um repositório".
-     - Defina o repositório como privado e nomeie-o (por exemplo, `adopet`).
-  3. **Autenticar no ECR via AWS CLI:**
-     - Configure suas credenciais com `aws configure`.
-     - Execute o comando:
-       ```bash
-       aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <URI-do-repositório>
-       ```
-  4. **Taggear e Fazer o Push da Imagem:**
-     - Taggear a imagem:
-       ```bash
-       docker tag adopet:1.0 <URI-do-repositório>:1.0
-       ```
-     - Enviar a imagem para o ECR:
-       ```bash
-       docker push <URI-do-repositório>:1.0
-       ```
+  1. Construa a imagem Docker conforme descrito.
+  2. Crie um repositório no ECR:
+     - No console AWS, acesse o ECR e clique em "Criar repositório".
+     - Defina-o como privado e nomeie (ex: `adopet`).
+  3. Autentique-se no ECR via AWS CLI:
+     ```bash
+     aws ecr get-login-password --region us-east-2 | docker login --username AWS --password-stdin <URI-do-repositório>
+     ```
+  4. Taggear a imagem:
+     ```bash
+     docker tag adopet:1.0 <URI-do-repositório>:1.0
+     ```
+  5. Faça o push da imagem:
+     ```bash
+     docker push <URI-do-repositório>:1.0
+     ```
 
 ### Deploy no ECS: Configuração do Cluster e Task Definition
-- **Passo a Passo Detalhado (via Console AWS):**
-  1. **Acessar o ECS:**
-     - No console da AWS, procure e acesse o serviço **Elastic Container Service (ECS)**.
-  2. **Criar um Cluster:**
-     - Clique em **Criar cluster**.
-     - Escolha um nome para o cluster, por exemplo, `projeto_adopet`.
-     - Selecione a opção de **EC2** (para provisionar instâncias físicas).
-     - Escolha entre:
-       - **Sob Demanda:** Paga conforme o uso.
-       - **Spot:** Custo menor, mas com disponibilidade variável.
-     - Selecione a imagem do sistema operacional (Linux).
-     - No campo de **Tipo de Instância**, escolha uma instância adequada (por exemplo, `t2.medium`).
-     - Configure a função da instância (perfil IAM); caso contrário, será utilizado o padrão.
-     - Defina a capacidade desejada (número de instâncias) e associe o par de chaves (para acesso remoto via AWS CLI).
-     - Utilize a VPC e sub-redes padrão, ou configure conforme necessário, e mantenha o grupo de segurança padrão.
-     - Clique em **Criar** para provisionar o cluster.
-  3. **Definir uma Tarefa (Task Definition):**
-     - No ECS, acesse **Definições de Tarefas** e clique em **Criar nova definição de tarefa**.
-     - Escolha a família da tarefa (por exemplo, `família-adopet`) para agrupar futuras versões.
-     - Em **Requisitos de Infraestrutura**, selecione **EC2** (já que o cluster foi configurado com instâncias EC2) e defina o modo de rede como **Bridge**.
-     - Configure o tamanho da tarefa:
-       - **CPU:** Por exemplo, 0.5 unidades.
-       - **Memória:** Defina um limite mínimo (flexível, por exemplo, 2 GB) e um limite máximo (rígido) conforme necessário.
-     - Em **Contêiner**, clique em **Adicionar contêiner**:
-       - Nome: `adopet_container`
-       - No campo da **URI da imagem**, insira a URI da imagem que você obteve no ECR.
-       - Marque a opção **Contêiner Essencial** como "Sim".
-       - Configure o **Mapeamento de Portas**:
-         - **Porta do Host:** 80
-         - **Porta do Contêiner:** 3000
-         - **Protocolo:** TCP
-     - Ajuste os **Limites de Alocação de Recursos** para garantir que o contêiner tenha recursos suficientes (por exemplo, CPU 0.5, memória mínima de 2 GB).
-     - Configure o **Registro em Log** (opcional, mas recomendado com o CloudWatch).
-     - Clique em **Criar** para salvar a definição da tarefa.
-  4. **Implantar a Aplicação como Serviço:**
-     - Após criar a definição de tarefa, clique em **Implantar**.
-     - Escolha **Criar Serviço** para garantir execução contínua, o que assegura alta disponibilidade (se uma tarefa falhar, o ECS reinicia uma nova).
-     - Configure o número de tarefas desejado e outras opções de escalonamento.
-     - Finalize e clique em **Criar Serviço** para implantar sua aplicação.
-
-> **Observação:**  
-> Criar um serviço no ECS garante que a aplicação seja executada continuamente, com reinicialização automática em caso de falhas, enquanto executar uma tarefa é adequado para execuções pontuais.
+1. **Acessar o ECS:**
+   - No console AWS, acesse o serviço **Elastic Container Service (ECS)**.
+2. **Criar um Cluster:**
+   - Clique em **Criar cluster** e escolha o nome, por exemplo, `projeto_adopet`.
+   - Selecione a opção **EC2** para provisionar instâncias.
+   - Escolha entre **Sob Demanda** (paga conforme uso) ou **Spot** (custo menor com disponibilidade variável).
+   - Selecione Linux como imagem do SO e, para o tipo de instância, por exemplo, `t2.medium`.
+   - Configure a função da instância (perfil IAM) e defina a capacidade desejada (número de instâncias).
+   - Utilize a VPC, sub-redes e grupo de segurança padrão e clique em **Criar**.
+3. **Definir uma Tarefa (Task Definition):**
+   - No ECS, acesse **Definições de Tarefas** e clique em **Criar nova definição de tarefa**.
+   - Escolha a família da tarefa (ex: `família-adopet`).
+   - Em **Requisitos de Infraestrutura**, selecione **EC2** e defina o modo de rede como **Bridge**.
+   - Configure o tamanho da tarefa (por exemplo, CPU: 0.5; Memória: mínimo 2 GB).
+   - Em **Contêiner**, clique em **Adicionar contêiner**:
+     - Nome: `adopet_container`
+     - Insira a URI da imagem do ECR.
+     - Marque como **Contêiner Essencial**.
+     - Configure o mapeamento de portas: Host: 80, Contêiner: 3000, Protocolo TCP.
+   - Ajuste os limites de alocação de recursos e configure o registro em log (opcional com CloudWatch).
+   - Clique em **Criar**.
+4. **Implantar a Aplicação como Serviço:**
+   - Após criar a Task Definition, clique em **Criar Serviço**.
+   - Escolha **Criar Serviço** para garantir execução contínua e alta disponibilidade.
+   - Configure o número de tarefas (por exemplo, 1) e outras opções de escalonamento.
+   - Clique em **Criar Serviço** para implantar.
 
 ---
 
@@ -626,12 +600,82 @@ Garantir amplo acesso à internet, mantendo a segurança da aplicação.
 Após configurar com sucesso uma instância EC2 para hospedar o site de uma startup, como o Bytebank Banco Digital, as estratégias recomendadas são:
 
 - **Automatização com AWS CLI e CloudWatch:**  
-  Utilize comandos da AWS CLI para gerenciar as instâncias e configure alarmes no CloudWatch (usando `aws cloudwatch put-metric-alarm`) para monitorar a CPU e outras métricas críticas, permitindo que ações automáticas (como escalonamento ou reinicialização) sejam disparadas conforme necessário.
+  Use comandos da AWS CLI para gerenciar instâncias e configurar alarmes no CloudWatch (ex: `aws cloudwatch put-metric-alarm`) para monitorar CPU e outras métricas críticas, permitindo ações automáticas como escalonamento ou reinicialização.
 
 - **Integração com AWS SDK e Segurança com VPC:**  
-  Utilize o AWS SDK para integrar os serviços do S3 (armazenamento de arquivos) e do RDS (banco de dados) diretamente na aplicação web, garantindo que os arquivos sensíveis não fiquem expostos. Para isso, configure uma VPC com sub-redes públicas e privadas, isolando e protegendo os dados estratégicos e garantindo uma infraestrutura organizada e segura.
+  Utilize o AWS SDK para integrar serviços (S3 para armazenamento e RDS para banco de dados) diretamente na aplicação web, garantindo que dados sensíveis não fiquem expostos. Configure uma VPC com sub-redes públicas e privadas para isolar e proteger os recursos.
 
 - **Deploy com Containers no ECS/ECR:**  
-  Para projetos complexos que exigem a separação de front end, back end e banco de dados, a containerização se mostra a estratégia mais adequada. Ao criar imagens Docker da sua aplicação e enviá-las ao ECR, você poderá orquestrar os containers com o ECS, garantindo um ambiente ágil, escalável e resiliente.
+  Para projetos complexos com front end, back end e banco de dados separados, a containerização via ECS/ECR permite um deploy ágil, escalável e resiliente.
+
+---
+
+## Gerenciamento e Configuração de Infraestrutura e Recursos
+
+Para garantir que a aplicação não apenas seja colocada no ar, mas também mantenha bom funcionamento e desempenho, é essencial gerenciar e configurar os recursos e a infraestrutura de forma contínua.
+
+### Gerenciando e Configurando Recursos
+- **Análise da Infraestrutura:**  
+  Monitorar o tráfego da aplicação e analisar o desempenho dos recursos para atender às demandas dos usuários.
+- **Acesso ao EC2:**  
+  No console da AWS, clique em "Serviços" e selecione "EC2". No painel, na seção "Recursos", você verá as instâncias em execução e, na área de armazenamento, o EBS – discos virtuais que possibilitam backup da instância.
+
+### Uso do AWS Fargate
+- **AWS Fargate (Modo Serverless):**  
+  Permite executar containers sem se preocupar com o gerenciamento da infraestrutura. Ideal para focar no desenvolvimento e boas práticas enquanto a escalabilidade é gerenciada automaticamente.
+- **Criando um Cluster no Fargate:**  
+  No ECS, selecione a opção Fargate ao criar um cluster. Isso elimina a necessidade de provisionar instâncias EC2 manualmente para execução dos containers.
+
+### Gerenciando Recursos com CloudFormation
+- **CloudFormation:**  
+  É um serviço que permite interagir e gerenciar recursos da AWS através de templates. Por exemplo, você pode criar pilhas (stacks) que definem toda a infraestrutura necessária para sua aplicação.
+- **Visualização e Logs:**  
+  Após criar recursos via CloudFormation, você pode visualizar os logs e o status dos clusters e serviços criados.
+
+### Configuração e Criação de VPC
+- **Virtual Private Cloud (VPC):**  
+  Permite isolar e proteger recursos na nuvem.  
+  - **Criação de VPC:**  
+    No console da AWS, busque por "VPC" e clique em "Criar VPC".  
+    Escolha a opção "VPC e muito mais" para configurar gateways, sub-redes (públicas e privadas) e tabelas de roteamento.  
+  - **Exemplo de Configuração:**  
+    Nome: `projeto_adopet-vpc`  
+    Bloco CIDR IPv4: `10.0.0.0/16` (oferecendo até 65 mil endereços)  
+    Configure 2 sub-redes públicas e 2 privadas para garantir alta disponibilidade e segurança.  
+    Ative o Gateway NAT para que recursos com IP privado possam acessar a internet via tradução de endereços.
+  - **Importância:**  
+    A VPC garante que, mesmo com um front-end público, dados sensíveis (como informações de adoção) sejam protegidos em sub-redes privadas.
+
+### Revisão e Atualização de Task Definitions para Fargate
+- **Atualização de Definição de Tarefa:**  
+  Caso seu serviço esteja migrando para o modo Fargate, crie uma nova revisão da Task Definition. Por exemplo, para a definição `tarefa_adopet:1`, crie uma nova revisão (por exemplo, `tarefa_adopet:2`) que permita o uso de Fargate.  
+  - No ECS, marque a Task Definition desejada e clique em "Criar nova revisão > Criar nova revisão com JSON" ou via interface gráfica.
+  - Altere os requisitos de infraestrutura para aceitar tanto instâncias EC2 quanto Fargate, ajustando o modo de rede para `awsvpc`.
+
+### Criação do Serviço Serverless no ECS
+- **Criação do Serviço:**  
+  No cluster destinado a ambientes serverless (ex: `adopet_cluster_servless`), clique em "Criar Serviço" para implantar a nova revisão da Task Definition.  
+  - Configure a capacidade (por exemplo, 1 tarefa ativa para garantir alta disponibilidade).
+  - Defina a versão da plataforma como "LATEST".
+  - Após a criação, verifique o status e o IP público do serviço, e lembre-se de acessar usando a porta correta (ex: `https://<IP>:3000`).
+
+---
+
+Esta nova seção complementa o documento, fornecendo uma visão detalhada de como gerenciar e configurar a infraestrutura e os recursos para manter a aplicação em bom funcionamento, utilizando AWS Fargate, CloudFormation e VPC, além de atualizar a Task Definition para ambientes serverless.
+
+---
+
+# Cenário Integrado: Bytebank Banco Digital
+
+Após configurar com sucesso uma instância EC2 para hospedar o site de uma startup, como o Bytebank Banco Digital, as estratégias recomendadas são:
+
+- **Automatização com AWS CLI e CloudWatch:**  
+  Utilize comandos da AWS CLI para gerenciar as instâncias e configure alarmes no CloudWatch para monitorar métricas críticas, permitindo ações automáticas (como escalonamento ou reinicialização) conforme necessário.
+
+- **Integração com AWS SDK e Segurança com VPC:**  
+  Utilize o AWS SDK para integrar serviços como S3 e RDS diretamente na aplicação, garantindo que dados sensíveis estejam protegidos. Configure uma VPC com sub-redes públicas e privadas para isolar os recursos.
+
+- **Deploy com Containers no ECS/ECR:**  
+  Para projetos complexos com front end, back end e banco de dados separados, a containerização, orquestrada pelo ECS e armazenada no ECR, oferece um deploy ágil, escalável e resiliente.
 
 ---
